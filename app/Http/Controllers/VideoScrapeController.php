@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Redis;
 
 class VideoScrapeController extends Controller
 {
@@ -84,8 +85,18 @@ class VideoScrapeController extends Controller
 
     public function getMixingStatus($videoId)
     {	
+    	$key = 'mixing_yt_id:'.$videoId;
+
+    	$json = Redis::get($key);
+
+    	//if we could find anything by keyword we return array from cache; 
+    	if(!empty($json)){
+    		return json_decode($json, true);
+    	}
 
     	$mix = DB::table('mixes')->where('yt_id', $videoId)->first(); 
+    	// if we couldn't find anything from our db, we must stop it.
+    	if(empty($mix)) return [];
 
     	$url = 'http://first.karaoke.red/api/mix/dynamic/'.$mix->mix_id.'/';
 
@@ -103,7 +114,11 @@ class VideoScrapeController extends Controller
             	'vocals_url' => $json['vocals_url'], 
             	'accompaniment_url' => $json['accompaniment_url'],
             	'status' => 4]);  
+
+            Redis::set($key, json_encode($json));
+
  		}
+ 		
 
  		return $json;  
     }
