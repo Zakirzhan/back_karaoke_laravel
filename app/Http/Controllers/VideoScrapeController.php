@@ -37,6 +37,7 @@ class VideoScrapeController extends Controller
 			    'server_id' => 0,
 			    'created_at' => date('Y-m-d H:i:s'),
 			]); 
+		
  		}  
 
 		return $response;
@@ -115,8 +116,9 @@ class VideoScrapeController extends Controller
             	'accompaniment_url' => $json['accompaniment_url'],
             	'status' => 4]);  
 
-            Redis::set($key, json_encode($json));
-
+	        if($json['status'] == 'Done'){
+	 			 Redis::set($key, json_encode($json));
+	 		}
  		}
  		
 
