@@ -19,19 +19,19 @@ use App\Http\Controllers\VideoScrapeController;
 //     return $request->user();
 // });
 
+Route::group(['middleware' => ['auth:sanctum'], function() {
 
-Route::get('/getMixData/{id}', [VideoScrapeController::class, 'getMixData']);
+    Route::get('/getMixData/{id}', [VideoScrapeController::class, 'getMixData']);
 
-Route::get('/downloadVideo/{id}', [VideoScrapeController::class, 'downloadVideo']);
+    Route::get('/downloadVideo/{id}', [VideoScrapeController::class, 'downloadVideo']);
 
+    Route::get('/getDownloadingStatus/{trackId}', [VideoScrapeController::class, 'getDownloadingStatus']);
 
-Route::get('/getDownloadingStatus/{trackId}', [VideoScrapeController::class, 'getDownloadingStatus']);
+    Route::get('/createMixFromTrack/{trackId}', [VideoScrapeController::class, 'createMixFromTrack']);
 
-
-Route::get('/createMixFromTrack/{trackId}', [VideoScrapeController::class, 'createMixFromTrack']);
-
-
-Route::get('/getMixingStatus/{taskId}', [VideoScrapeController::class, 'getMixingStatus']);
+    Route::get('/getMixingStatus/{taskId}', [VideoScrapeController::class, 'getMixingStatus']);
+    
+});
 
 
 
